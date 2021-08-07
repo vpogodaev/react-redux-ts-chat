@@ -9,7 +9,20 @@ export function makeServer({ environment = 'development' } = {}) {
 
     seeds(server) {
       server.create('user', { name: 'Bob', id: 1, status: 'offline' });
-      server.create('user', { name: 'Alice', id: 2, status: 'offline' });
+      server.create('user', { name: 'Alice', id: 2, status: 'online' });
+      server.create('user', { name: 'Fred', id: 3, status: 'offline' });
+      server.create('user', { name: 'Mr. Bond', id: 4, status: 'online' });
+      server.create('user', { name: 'John', id: 5, status: 'offline' });
+      server.create('user', {
+        name: '0123456789 0123456789',
+        id: 6,
+        status: 'online',
+      });
+      server.create('user', {
+        name: '01234567890123456789',
+        id: 7,
+        status: 'online',
+      });
     },
 
     routes() {
@@ -17,6 +30,9 @@ export function makeServer({ environment = 'development' } = {}) {
 
       this.get('/users', (schema) => {
         return schema.users.all();
+      });
+      this.get('/users/online', (schema) => {
+        return schema.users.where({ status: 'online' });
       });
 
       this.post('/users/login', (schema, request) => {

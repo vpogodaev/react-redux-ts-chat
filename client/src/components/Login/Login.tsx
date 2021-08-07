@@ -6,7 +6,7 @@ import {
   getCurrentUser,
   getStateStatus,
   loginAsync,
-} from '../../features/usersSlice';
+} from '../../features/currentUserSlice';
 
 import styles from './Login.module.scss';
 
@@ -28,11 +28,11 @@ const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
   const onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await dispatch(loginAsync(name));
+      dispatch(loginAsync(name));
       setError(null);
     } catch (err) {
       console.error('failed to log in', err);
