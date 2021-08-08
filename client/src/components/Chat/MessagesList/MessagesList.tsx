@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { SliceStatuses } from '../../../enums/SliceStatuses';
+import { getCurrentUser } from '../../../features/currentUserSlice';
 import {
   getMessagesAsync,
   selectMessages,
@@ -17,26 +19,57 @@ const MessagesList: React.FC<TMessagesListProps> = ({}): JSX.Element => {
     (state: RootState) => state.messages.status
   );
   const messages = useSelector(selectMessages);
+  const { id: userId } = useSelector(getCurrentUser);
+  let listEnd: HTMLElement | null;
 
   useEffect(() => {
     if (messagesStatus === SliceStatuses.idle) {
       dispatch(getMessagesAsync());
     }
   });
+  
+  const scrollToBottom = () => {
+    listEnd?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-  const renderMessages = () => {
-    return (
-      <ul className={styles.messages}>
-        {messages.map((m) => (
-          <li key={m.id}>
-            <Message message={m} />
-          </li>
-        ))}
-      </ul>
+  // useEffect(() => {
+  //   scrollToBottom();
+  //   // eslint-disable-next-line
+  // }, []);
+
+  useEffect(() => {
+    const l = messages.length;
+    if (l && messages[l - 1].userId === userId) {
+      scrollToBottom();
+    }
+    // eslint-disable-next-line
+  }, [messages]);
+
+
+  const renderContent = () => {
+    return messagesStatus === SliceStatuses.loading ? (
+      <Spinner animation="grow" variant="primary" />
+    ) : messagesStatus === SliceStatuses.succeeded ? (
+      <>
+        <ul className={styles.messages}>
+          {messages.map((m) => (
+            <li key={m.id}>
+              <Message message={m} />
+            </li>
+          ))}
+        </ul>
+        <div
+          ref={(el) => {
+            listEnd = el;
+          }}
+        ></div>
+      </>
+    ) : (
+      <div>error</div>
     );
   };
 
-  return renderMessages();
+  return renderContent();
 };
 
 export default MessagesList;

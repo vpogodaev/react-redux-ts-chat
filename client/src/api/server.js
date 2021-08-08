@@ -7,6 +7,7 @@ export function makeServer({ environment = 'development' } = {}) {
       user: Model,
       message: Model,
     },
+    //timing: 10000000,
 
     seeds(server) {
       // users
@@ -39,7 +40,7 @@ export function makeServer({ environment = 'development' } = {}) {
         text: 'Hello, you too!',
         timestamp: Date.now() - 5,
         userId: '0',
-        userName: 'Alice',
+        userName: 'Me',
       });
       server.create('message', {
         id: 3,
@@ -50,26 +51,74 @@ export function makeServer({ environment = 'development' } = {}) {
       });
       server.create('message', {
         id: 4,
-        text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit illo repudiandae laboriosam, nobis deleniti minima. Modi veniam rerum deleniti repellendus vitae dolorum facilis illo porro sint quo, fugiat, ratione neque.',
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
         timestamp: Date.now() - 5,
         userId: '2',
         userName: 'Alice',
+      });
+      server.create('message', {
+        id: 5,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '2',
+        userName: 'Alice',
+      });
+      server.create('message', {
+        id: 6,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '1',
+        userName: 'Bob',
+      });
+      server.create('message', {
+        id: 7,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '3',
+        userName: 'Fred',
+      });
+      server.create('message', {
+        id: 8,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '4',
+        userName: 'Mr. Bond',
+      });
+      server.create('message', {
+        id: 9,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '8',
+        userName: 'asd',
+      });
+      server.create('message', {
+        id: 10,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '0',
+        userName: 'Me',
+      });
+      server.create('message', {
+        id: 11,
+        text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia voluptatum tempore totam corrupti voluptates distinctio, ducimus provident iure quibusdam quas praesentium repellendus porro eaque laudantium similique perferendis dolore at nam.',
+        timestamp: Date.now() - 5,
+        userId: '4',
+        userName: 'Mr. Bond',
       });
     },
 
     routes() {
       this.namespace = 'api';
 
+      // users
       this.get('/users', (schema) => {
         return schema.users.all();
       });
       this.get('/users/online', (schema) => {
         return schema.users.where({ status: 'online' });
       });
-
       this.post('/users/login', (schema, request) => {
         let newUser = JSON.parse(request.requestBody);
-        //console.log('server', newUser);
 
         if (!newUser.name) {
           return new Response(400, {}, { errors: 'Name cannot be blank' });
@@ -82,8 +131,30 @@ export function makeServer({ environment = 'development' } = {}) {
         return schema.users.create({ ...newUser, status: 'online' }).attrs;
       });
 
+      // messages
       this.get('messages', (schema) => {
         return schema.messages.all();
+      });
+      this.post('/messages/post', (schema, request) => {
+        let newMessage = JSON.parse(request.requestBody);
+
+        if (!newMessage.text) {
+          return new Response(400, {}, { errors: 'Message cannot be blank' });
+        }
+        if (!newMessage.userId) {
+          return new Response(400, {}, { errors: 'User needed' });
+        }
+
+        let user = schema.users.findBy({ id: newMessage.userId });
+        if (!user) {
+          return new Response(400, {}, { errors: 'User not found' });
+        }
+
+        return schema.messages.create({
+          ...newMessage,
+          userName: user.name,
+          timestamp: Date.now(),
+        });
       });
     },
   });

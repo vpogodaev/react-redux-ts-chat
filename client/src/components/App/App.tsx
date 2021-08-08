@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 
 import { makeServer } from '../../api/server';
-import MessagesList from '../Chat/MessagesList/MessagesList';
+import Chat from '../Chat/Chat';
 
 import Login from '../Login/Login';
 import UsersList from '../Users/UsersList/UsersList';
@@ -22,16 +22,18 @@ if (process.env.NODE_ENV === 'development') {
 const App = () => {
   // return <Login />;
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/messages" component={MessagesList} />
-        <Redirect to="/messages"/>
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/users" component={UsersList} />
+    <div className={styles.app}>
+      <Router>
+        <Switch>
+          <Route exact path="/messages" component={Chat} />
+          {/* <Redirect to="/messages" /> */}
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/users" component={UsersList} />
 
-        {/* <Redirect to="/login"/> */}
-      </Switch>
-    </Router>
+          <Redirect to="/login"/>
+        </Switch>
+      </Router>
+    </div>
   );
 };
 
