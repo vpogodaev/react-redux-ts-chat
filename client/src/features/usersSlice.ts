@@ -3,16 +3,17 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpError } from '../types/errors';
 import { RootState } from '../app/store';
 import { IUser } from '../models/interfaces/IUser';
+import { SliceStatuses } from '../enums/SliceStatuses';
 
-export interface IUserState {
+interface IUserState {
   onlineUsers: IUser[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: SliceStatuses;
   msg: string | undefined;
 }
 
 const initialState: IUserState = {
   onlineUsers: [],
-  status: 'idle',
+  status: SliceStatuses.idle,
   msg: undefined,
 };
 
@@ -40,17 +41,17 @@ const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getOnlineUsersAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = SliceStatuses.loading;
       })
       .addCase(
         getOnlineUsersAsync.fulfilled,
         (state, action: PayloadAction<JSONResponse>) => {
-          state.status = 'succeeded';
+          state.status = SliceStatuses.succeeded;
           state.onlineUsers = action.payload.users;
         }
       )
       .addCase(getOnlineUsersAsync.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = SliceStatuses.failed;
         state.msg = action.error.message;
       });
   },

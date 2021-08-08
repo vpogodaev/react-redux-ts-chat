@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Container, Form, Row, Button, Card, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { SliceStatuses } from '../../enums/SliceStatuses';
 import {
   getCurrentUser,
   getStateStatus,
@@ -20,10 +21,10 @@ const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
   const currentUser = useSelector(getCurrentUser);
 
   useEffect(() => {
-    if (status.status === 'failed') {
+    if (status.status === SliceStatuses.failed) {
       setError(status.msg);
     }
-  }, [status])
+  }, [status]);
 
   const onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
@@ -44,8 +45,14 @@ const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
     return error && <Alert variant="danger">{error}</Alert>;
   };
 
-  if (currentUser.id) {
-    return <Redirect to='/users'/>;
+  console.log(status.status);  
+  console.log(status.status !== SliceStatuses.idle);
+  console.log(currentUser.id !== '0');
+
+  if (status.status !== SliceStatuses.idle && currentUser.id !== '0') {
+    // return <Redirect to='/users'/>;
+    // for test
+    return <Redirect to="/messages" />;
   }
 
   return (

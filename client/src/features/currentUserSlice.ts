@@ -3,20 +3,21 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpError } from '../types/errors';
 import { RootState } from '../app/store';
 import { IUser } from '../models/interfaces/IUser';
+import { SliceStatuses } from '../enums/SliceStatuses';
 
-export interface IUserState {
+interface IUserState {
   currentUser: IUser;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: SliceStatuses;
   msg: string | undefined;
 }
 
 const initialState: IUserState = {
   currentUser: {
-    id: 0,
+    id: '0',
     name: undefined,
     status: 'offline',
   },
-  status: 'idle',
+  status: SliceStatuses.idle,
   msg: undefined,
 };
 
@@ -47,10 +48,10 @@ const currentUserSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = SliceStatuses.loading;
       })
       .addCase(loginAsync.fulfilled, (state, action: PayloadAction<IUser>) => {
-        state.status = 'succeeded';
+        state.status = SliceStatuses.succeeded;
         state.currentUser = {
           name: action.payload.name,
           id: action.payload.id,
@@ -58,7 +59,7 @@ const currentUserSlice = createSlice({
         };
       })
       .addCase(loginAsync.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = SliceStatuses.failed;
         state.msg = action.error.message;
       });
   },
@@ -66,9 +67,10 @@ const currentUserSlice = createSlice({
 
 export default currentUserSlice.reducer;
 
-export const getCurrentUser = (state: RootState) => state.currentUser.currentUser;
+export const getCurrentUser = (state: RootState) =>
+  state.currentUser.currentUser;
 export const getStateStatus = (
   state: RootState
-): { status: string; msg: string | undefined } => {
-  return { status: state.users.status, msg: state.users.msg };
+): { status: SliceStatuses; msg: string | undefined } => {
+  return { status: state.currentUser.status, msg: state.users.msg };
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
+import { SliceStatuses } from '../../../enums/SliceStatuses';
 import {
   getOnlineUsersAsync,
   selectOnlineUsers,
@@ -19,7 +20,7 @@ const UsersList: React.FC<TUsersListProps> = ({}): JSX.Element => {
   const onlineUsers = useSelector(selectOnlineUsers);
 
   useEffect(() => {
-    if (usersStatus === 'idle') {
+    if (usersStatus === SliceStatuses.idle) {
       dispatch(getOnlineUsersAsync());
     }
   }, [usersStatus, dispatch]);

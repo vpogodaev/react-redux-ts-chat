@@ -5,9 +5,11 @@ export function makeServer({ environment = 'development' } = {}) {
     environment,
     models: {
       user: Model,
+      message: Model,
     },
 
     seeds(server) {
+      // users
       server.create('user', { name: 'Bob', id: 1, status: 'offline' });
       server.create('user', { name: 'Alice', id: 2, status: 'online' });
       server.create('user', { name: 'Fred', id: 3, status: 'offline' });
@@ -22,6 +24,36 @@ export function makeServer({ environment = 'development' } = {}) {
         name: '01234567890123456789',
         id: 7,
         status: 'online',
+      });
+
+      // messages
+      server.create('message', {
+        id: 1,
+        text: 'Hello, mf!',
+        timestamp: Date.now() - 10,
+        userId: '1',
+        userName: 'Bob',
+      });
+      server.create('message', {
+        id: 2,
+        text: 'Hello, you too!',
+        timestamp: Date.now() - 5,
+        userId: '0',
+        userName: 'Alice',
+      });
+      server.create('message', {
+        id: 3,
+        text: 'It is my message',
+        timestamp: Date.now() - 5,
+        userId: '8',
+        userName: 'asd',
+      });
+      server.create('message', {
+        id: 4,
+        text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit illo repudiandae laboriosam, nobis deleniti minima. Modi veniam rerum deleniti repellendus vitae dolorum facilis illo porro sint quo, fugiat, ratione neque.',
+        timestamp: Date.now() - 5,
+        userId: '2',
+        userName: 'Alice',
       });
     },
 
@@ -48,6 +80,10 @@ export function makeServer({ environment = 'development' } = {}) {
         }
 
         return schema.users.create({ ...newUser, status: 'online' }).attrs;
+      });
+
+      this.get('messages', (schema) => {
+        return schema.messages.all();
       });
     },
   });

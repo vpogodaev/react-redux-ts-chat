@@ -1,0 +1,31 @@
+.message {
+  display: inline-block;
+  min-width: 10%;
+  max-width: 70%;
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.75rem 0.75rem 0.75rem 0;
+  &My {
+    border-radius: 0.75rem 0.75rem 0 0.75rem;
+  }
+}
+
+.header {
+  font-size: 1.25rem;
+  display: grid;
+  gap: 1rem;
+  grid: 1fr / auto auto;
+}
+
+.date {
+  font-size: 0.75rem;
+  margin: auto 0;
+  text-align: right;
+}
+
+.wrapper {
+  display: flex;
+  &My {
+    justify-content: flex-end;
+  }  
+}
