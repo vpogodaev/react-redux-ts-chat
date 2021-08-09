@@ -50,9 +50,7 @@ const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
   console.log(currentUser.id !== '0');
 
   if (status.status !== SliceStatuses.idle && currentUser.id !== '0') {
-    // return <Redirect to='/users'/>;
-    // for test
-    return <Redirect to="/messages" />;
+    return <Redirect to="/room" />;
   }
 
   return (

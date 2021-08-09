@@ -9,6 +9,7 @@ import {
 
 import { makeServer } from '../../api/server';
 import Chat from '../Chat/Chat';
+import Room from '../Rooms/Room/Room';
 
 import Login from '../Login/Login';
 import UsersList from '../Users/UsersList/UsersList';
@@ -25,9 +26,13 @@ const App = () => {
     <div className={styles.app}>
       <Router>
         <Switch>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/room" component={Room} />          
+
+          {/* for tests */}
           <Route exact path="/messages" component={Chat} />
           {/* <Redirect to="/messages" /> */}
-          <Route exact path="/login" component={Login} />
+          {/* for tests */}
           <Route exact path="/users" component={UsersList} />
 
           <Redirect to="/login"/>

@@ -6,25 +6,58 @@ export function makeServer({ environment = 'development' } = {}) {
     models: {
       user: Model,
       message: Model,
+      room: Model,
     },
     //timing: 10000000,
 
     seeds(server) {
+      // rooms
+      server.create('room', { name: 'default', id: 1 });
+      server.create('room', { name: 'room2', id: 2 });
+      server.create('room', { name: 'room3', id: 3 });
+
       // users
-      server.create('user', { name: 'Bob', id: 1, status: 'offline' });
-      server.create('user', { name: 'Alice', id: 2, status: 'online' });
-      server.create('user', { name: 'Fred', id: 3, status: 'offline' });
-      server.create('user', { name: 'Mr. Bond', id: 4, status: 'online' });
-      server.create('user', { name: 'John', id: 5, status: 'offline' });
+      server.create('user', {
+        name: 'Bob',
+        id: 1,
+        status: 'offline',
+        roomId: 1,
+      });
+      server.create('user', {
+        name: 'Alice',
+        id: 2,
+        status: 'online',
+        roomId: 2,
+      });
+      server.create('user', {
+        name: 'Fred',
+        id: 3,
+        status: 'offline',
+        roomId: 1,
+      });
+      server.create('user', {
+        name: 'Mr. Bond',
+        id: 4,
+        status: 'online',
+        roomId: 1,
+      });
+      server.create('user', {
+        name: 'John',
+        id: 5,
+        status: 'offline',
+        roomId: 1,
+      });
       server.create('user', {
         name: '0123456789 0123456789',
         id: 6,
         status: 'online',
+        roomId: 1,
       });
       server.create('user', {
         name: '01234567890123456789',
         id: 7,
         status: 'online',
+        roomId: 2,
       });
 
       // messages
@@ -34,6 +67,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 10,
         userId: '1',
         userName: 'Bob',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 2,
@@ -41,6 +76,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '0',
         userName: 'Me',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 3,
@@ -48,6 +85,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '8',
         userName: 'asd',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 4,
@@ -55,6 +94,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '2',
         userName: 'Alice',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 5,
@@ -62,6 +103,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '2',
         userName: 'Alice',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 6,
@@ -69,6 +112,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '1',
         userName: 'Bob',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 7,
@@ -76,6 +121,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '3',
         userName: 'Fred',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 8,
@@ -83,6 +130,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '4',
         userName: 'Mr. Bond',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 9,
@@ -90,6 +139,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '8',
         userName: 'asd',
+        placeType: 'ROOM',
+        placeId: 1,
       });
       server.create('message', {
         id: 10,
@@ -97,6 +148,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '0',
         userName: 'Me',
+        placeType: 'ROOM',
+        placeId: 2,
       });
       server.create('message', {
         id: 11,
@@ -104,6 +157,8 @@ export function makeServer({ environment = 'development' } = {}) {
         timestamp: Date.now() - 5,
         userId: '4',
         userName: 'Mr. Bond',
+        placeType: 'ROOM',
+        placeId: 2,
       });
     },
 

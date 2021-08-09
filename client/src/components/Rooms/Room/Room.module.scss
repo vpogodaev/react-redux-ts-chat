@@ -1,0 +1,14 @@
+.room {
+  min-height: 100%;
+  max-height: 100%;
+  display: flex;
+}
+
+.chat {
+  width: 85%;
+}
+
+.users {
+  overflow-y: auto;
+  width: 15%;
+}
