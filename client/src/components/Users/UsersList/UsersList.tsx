@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { SliceStatuses } from '../../../enums/SliceStatuses';
-import {
-  getOnlineUsersAsync,
-  selectOnlineUsers,
-} from '../../../features/usersSlice';
+import { selectOnlineUsers } from '../../../features/users/selectors';
+import { getOnlineUsersAsync } from '../../../features/users/slice';
 import { IUser } from '../../../models/interfaces/IUser';
 import OnlineUser from '../OnlineUser/OnlineUser';
 import styles from './UsersList.module.scss';
@@ -20,10 +18,16 @@ const UsersList: React.FC<TUsersListProps> = ({}): JSX.Element => {
   const onlineUsers = useSelector(selectOnlineUsers);
 
   useEffect(() => {
+    dispatch(getOnlineUsersAsync());
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     if (usersStatus === SliceStatuses.idle) {
       dispatch(getOnlineUsersAsync());
     }
-  }, [usersStatus, dispatch]);
+    // eslint-disable-next-line
+  }, [usersStatus]);
 
   const onUserClicked = (user: IUser) => {
     console.log(user);

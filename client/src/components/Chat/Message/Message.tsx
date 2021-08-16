@@ -1,6 +1,7 @@
 import { Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { getCurrentUser } from '../../../features/currentUserSlice';
+
+import { selectCurrentUser } from '../../../features/users/selectors';
 import { IMessage } from '../../../models/interfaces/IMessage';
 import styles from './Message.module.scss';
 
@@ -10,7 +11,7 @@ declare type TMessageProps = {
 
 const Message: React.FC<TMessageProps> = ({ message }): JSX.Element => {
   const { id, text, timestamp, userId, userName } = message;
-  const { id: curUserId } = useSelector(getCurrentUser);
+  const { id: curUserId } = useSelector(selectCurrentUser);
 
   const messageStyle =
     userId === curUserId

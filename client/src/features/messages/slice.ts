@@ -1,22 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
-import { SliceStatuses } from '../enums/SliceStatuses';
-import { IMessage } from '../models/interfaces/IMessage';
-import { INewMessage } from '../models/interfaces/INewMessage';
-import { HttpError } from '../types/errors';
+
+import { SliceStatuses } from '../../enums/SliceStatuses';
+import { IMessage } from '../../models/interfaces/IMessage';
+import { INewMessage } from '../../models/interfaces/INewMessage';
+import { HttpError } from '../../types/errors';
 
 interface IMessagesState {
   status: SliceStatuses;
   messages: IMessage[];
 }
 
-type JSONResponse = {
-  messages: IMessage[];
-};
-
 const initialState: IMessagesState = {
   status: SliceStatuses.idle,
   messages: [],
+};
+
+type JSONResponse = {
+  messages: IMessage[];
 };
 
 export const getMessagesAsync = createAsyncThunk(
@@ -72,5 +72,3 @@ const messagesSlice = createSlice({
 });
 
 export default messagesSlice.reducer;
-
-export const selectMessages = (state: RootState) => state.messages.messages;

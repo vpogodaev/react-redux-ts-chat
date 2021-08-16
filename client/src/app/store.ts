@@ -1,13 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
-import usersReducer from '../features/usersSlice';
-import currentUserReducer from '../features/currentUserSlice';
-import messagesReducer from '../features/messagesSlice';
+import usersReducer from '../features/users/slice';
+import messagesReducer from '../features/messages/slice';
 
 export const store = configureStore({
   reducer: {
     users: usersReducer,
-    currentUser: currentUserReducer,
     messages: messagesReducer,
   },
 });

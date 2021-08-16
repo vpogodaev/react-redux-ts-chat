@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Container, Form, Row, Button, Card, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { SliceStatuses } from '../../enums/SliceStatuses';
 import {
-  getCurrentUser,
-  getStateStatus,
-  loginAsync,
-} from '../../features/currentUserSlice';
+  selectCurrentUser,
+  selectStateStatus,
+  selectUsersErrorMsg,
+} from '../../features/users/selectors';
+import { loginAsync } from '../../features/users/slice';
 
 import styles from './Login.module.scss';
 
 declare type TLoginProps = {};
 
+const errors: { [msg: string]: string } = {
+  Conflict: 'Имя занято. Выберите другое имя.',
+};
+
 const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
   const [name, setName] = useState('');
-  const [error, setError] = useState<string | undefined | null>();
   const dispatch = useDispatch();
-  const status = useSelector(getStateStatus);
-  const currentUser = useSelector(getCurrentUser);
+  const status = useSelector(selectStateStatus);
+  const currentUser = useSelector(selectCurrentUser);
 
-  useEffect(() => {
-    if (status.status === SliceStatuses.failed) {
-      setError(status.msg);
-    }
-  }, [status]);
+  const storeMessage = useSelector(selectUsersErrorMsg);
 
   const onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
@@ -32,24 +32,18 @@ const Login: React.FC<TLoginProps> = ({}): JSX.Element => {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      dispatch(loginAsync(name));
-      setError(null);
-    } catch (err) {
-      console.error('failed to log in', err);
-      setError('Произошла ошибка');
-    }
+    dispatch(loginAsync(name));
   };
 
   const renderError = () => {
-    return error && <Alert variant="danger">{error}</Alert>;
+    return storeMessage
+      ? errors[storeMessage] && (
+          <Alert variant="danger">{errors[storeMessage]}</Alert>
+        )
+      : null;
   };
 
-  console.log(status.status);  
-  console.log(status.status !== SliceStatuses.idle);
-  console.log(currentUser.id !== '0');
-
-  if (status.status !== SliceStatuses.idle && currentUser.id !== '0') {
+  if (status !== SliceStatuses.idle && currentUser.id !== '0') {
     return <Redirect to="/room" />;
   }
 

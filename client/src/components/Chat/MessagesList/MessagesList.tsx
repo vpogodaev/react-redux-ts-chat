@@ -3,11 +3,9 @@ import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { SliceStatuses } from '../../../enums/SliceStatuses';
-import { getCurrentUser } from '../../../features/currentUserSlice';
-import {
-  getMessagesAsync,
-  selectMessages,
-} from '../../../features/messagesSlice';
+import { selectCurrentUser } from '../../../features/users/selectors';
+import { selectMessages } from '../../../features/messages/selectors';
+import { getMessagesAsync } from '../../../features/messages/slice';
 import Message from '../Message/Message';
 import styles from './MessagesList.module.scss';
 
@@ -19,7 +17,7 @@ const MessagesList: React.FC<TMessagesListProps> = ({}): JSX.Element => {
     (state: RootState) => state.messages.status
   );
   const messages = useSelector(selectMessages);
-  const { id: userId } = useSelector(getCurrentUser);
+  const { id: userId } = useSelector(selectCurrentUser);
   let listEnd: HTMLElement | null;
 
   useEffect(() => {
@@ -27,7 +25,7 @@ const MessagesList: React.FC<TMessagesListProps> = ({}): JSX.Element => {
       dispatch(getMessagesAsync());
     }
   });
-  
+
   const scrollToBottom = () => {
     listEnd?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -44,7 +42,6 @@ const MessagesList: React.FC<TMessagesListProps> = ({}): JSX.Element => {
     }
     // eslint-disable-next-line
   }, [messages]);
-
 
   const renderContent = () => {
     return messagesStatus === SliceStatuses.loading ? (

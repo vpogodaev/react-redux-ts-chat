@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { HttpError } from '../types/errors';
-import { RootState } from '../app/store';
-import { IUser } from '../models/interfaces/IUser';
-import { SliceStatuses } from '../enums/SliceStatuses';
+import { HttpError } from '../../types/errors';
+import { IUser } from '../../models/interfaces/IUser';
+import { SliceStatuses } from '../../enums/SliceStatuses';
 
 interface IUserState {
   currentUser: IUser;
+  onlineUsers: IUser[];
   status: SliceStatuses;
   msg: string | undefined;
 }
@@ -17,14 +17,31 @@ const initialState: IUserState = {
     name: undefined,
     status: 'offline',
   },
+  onlineUsers: [],
   status: SliceStatuses.idle,
   msg: undefined,
 };
 
+type JSONResponse = {
+  users: IUser[];
+};
+
+export const getOnlineUsersAsync = createAsyncThunk(
+  'users/online',
+  async () => {
+    return await fetch('/api/users/online').then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new HttpError(response.status, response.statusText);
+    });
+  }
+);
+
 export const loginAsync = createAsyncThunk(
   'users/login',
   async (userName: string) => {
-    const fetchResult = fetch('/api/users/login', {
+    return await fetch('/api/users/login', {
       method: 'POST',
       headers: {
         'Content-type': 'applications/json;charset=utf-8',
@@ -36,17 +53,29 @@ export const loginAsync = createAsyncThunk(
       }
       throw new HttpError(response.status, response.statusText);
     });
-
-    return fetchResult;
   }
 );
 
-const currentUserSlice = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(getOnlineUsersAsync.pending, (state) => {
+        state.status = SliceStatuses.loading;
+      })
+      .addCase(
+        getOnlineUsersAsync.fulfilled,
+        (state, action: PayloadAction<JSONResponse>) => {
+          state.status = SliceStatuses.succeeded;
+          state.onlineUsers = action.payload.users;
+        }
+      )
+      .addCase(getOnlineUsersAsync.rejected, (state, action) => {
+        state.status = SliceStatuses.failed;
+        state.msg = action.error.message;
+      })
       .addCase(loginAsync.pending, (state) => {
         state.status = SliceStatuses.loading;
       })
@@ -60,17 +89,9 @@ const currentUserSlice = createSlice({
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.status = SliceStatuses.failed;
-        state.msg = action.error.message;
+        state.msg = action.error.message || undefined;
       });
   },
 });
 
-export default currentUserSlice.reducer;
-
-export const getCurrentUser = (state: RootState) =>
-  state.currentUser.currentUser;
-export const getStateStatus = (
-  state: RootState
-): { status: SliceStatuses; msg: string | undefined } => {
-  return { status: state.currentUser.status, msg: state.users.msg };
-};
+export default usersSlice.reducer;
